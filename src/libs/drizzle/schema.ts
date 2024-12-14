@@ -11,10 +11,20 @@ import {
 } from "drizzle-orm/pg-core";
 
 
-export const users = pgTable("users", {
+export const useCasesSteps = pgTable("useCasesSteps", {
    id: serial("id").primaryKey(),
-   name: text("name"),
-   email: text("email"),
-   created_at: timestamp("created_at").defaultNow(),
-   updated_at: timestamp("updated_at"),
+   release: text("release"),
+   instruction: text("text"),
+   prev_id: integer("id_kroku"),
 });
+
+export const useCasesStepsRelations = relations(useCasesSteps, ({one}) => ({
+   prev: one(useCasesSteps, {
+      fields: [useCasesSteps.prev_id],
+      references: [useCasesSteps.id],
+   })
+}))
+
+// step: {wyzwalacz: string, text:string}
+
+// step[] -> step[] -> step[]
