@@ -135,7 +135,7 @@ app.post("/wavFileTest", async (req, res) => {
   // }
   // const text = await speechToText.recognizeSpeech(wavFile);
   // console.log(text.text);
-  const finalText = "Jak wygrać hackaton?";
+  const finalText = "Jak zadzwonić do wnuczka?";
   const matchedText = finalText;
   const allPrompts = await selectAllGivenPrompts();
   const matchedPrompt = allPrompts.find((element) => element.pytanie === matchedText);

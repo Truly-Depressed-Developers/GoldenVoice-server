@@ -58,8 +58,12 @@ export class DataManager {
             // console.log(javascriptContent);
             // return javascriptContent;
             // console.log(matches[1])
-            console.log(JSON.parse(javascriptContent));
-            return JSON.parse(javascriptContent);
+            try {
+                return JSON.parse(javascriptContent);
+            } catch (error) {
+                console.log(error);
+                return null;
+            }
         } else {
             return null;
         }
