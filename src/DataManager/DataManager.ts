@@ -2,6 +2,7 @@ import fs from 'fs';
 import { Request } from "express";
 import OpenAI from "openai";
 import { config } from "../utils/config";
+import db from '../libs/drizzle/DB';
 
 require('dotenv').config();
 export class DataManager {
@@ -46,5 +47,21 @@ export class DataManager {
         });
 
         return completion.choices[0].message.content ?? "";
+    }
+    public decodeOpenAIResponse(response: string) {
+        const decodedResponse = response;
+        const regex = /\`\`javascript([\s\S]*?)\`\`\`/;
+        const matches = response.match(regex);
+
+        if (matches) {
+            const javascriptContent = matches[1];
+            // console.log(javascriptContent);
+            // return javascriptContent;
+            // console.log(matches[1])
+            console.log(JSON.parse(javascriptContent));
+            return JSON.parse(javascriptContent);
+        } else {
+            return null;
+        }
     }
 }

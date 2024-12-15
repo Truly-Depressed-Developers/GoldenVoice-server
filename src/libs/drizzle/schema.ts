@@ -1,29 +1,30 @@
 import { relations, sum, eq } from "drizzle-orm";
 import {
-	serial,
-	text,
-	timestamp,
-	pgTable,
-	uuid,
-	integer,
-	primaryKey,
-  boolean,
+   serial,
+   text,
+   timestamp,
+   pgTable,
+   uuid,
+   integer,
+   primaryKey,
+   boolean,
+   json,
 } from "drizzle-orm/pg-core";
 
 
 export const useCasesSteps = pgTable("useCasesSteps", {
    id: serial("id").primaryKey(),
-   release: text("release"),
-   instruction: text("text"),
-   prev_id: integer("id_kroku"),
+   pytanie: text("pytanie").unique(),
+   instrukcje: json("instrukcje").$type<{
+      [key: string]: {
+         pytanie: string;
+         odpowiedzi: {
+            tak: string | number;
+            nie: string | number;
+         };
+      };
+   }>(),
 });
-
-export const useCasesStepsRelations = relations(useCasesSteps, ({one}) => ({
-   prev: one(useCasesSteps, {
-      fields: [useCasesSteps.prev_id],
-      references: [useCasesSteps.id],
-   })
-}))
 
 // step: {wyzwalacz: string, text:string}
 

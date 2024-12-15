@@ -1,5 +1,5 @@
 {
-  "id": "ea3327dd-dad1-4255-aec6-d73068d73ebf",
+  "id": "bb265f7a-5fcb-4b28-8338-d79a1668b90d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -14,21 +14,15 @@
           "primaryKey": true,
           "notNull": true
         },
-        "release": {
-          "name": "release",
+        "pytanie": {
+          "name": "pytanie",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "text": {
-          "name": "text",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "id_kroku": {
-          "name": "id_kroku",
-          "type": "integer",
+        "instrukcje": {
+          "name": "instrukcje",
+          "type": "json",
           "primaryKey": false,
           "notNull": false
         }
@@ -36,7 +30,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "useCasesSteps_pytanie_unique": {
+          "name": "useCasesSteps_pytanie_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "pytanie"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
