@@ -11,6 +11,7 @@ const config = {
    DB_USER: process.env.DB_USER ?? "UDD",
    DB_PASSWORD: process.env.DB_PASSWORD ?? "qwerty",
    MIGRATE: Boolean(process.env.MIGRATE),
+   OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
 } as const;
 
 const databaseConfig = {

@@ -18,7 +18,7 @@ export class SpeechToText {
         return new Promise((resolve, reject) => {
             // this.files = Array(10).fill(file_name);
             this.model = new vosk.Model(this.MODEL_PATH);
-            const recognizer = new vosk.Recognizer({ model: this.model, sampleRate: 16000 });
+            const recognizer = new vosk.Recognizer({ model: this.model, sampleRate: 44100 });
 
             // for (const file of this.files) {
             const data = fs.readFileSync(file_name);

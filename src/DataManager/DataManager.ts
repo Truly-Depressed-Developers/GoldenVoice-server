@@ -1,22 +1,50 @@
 import fs from 'fs';
 import { Request } from "express";
+import OpenAI from "openai";
+import { config } from "../utils/config";
+
+require('dotenv').config();
 export class DataManager {
+    private openai;
+    constructor() {
+        if (config.OPENAI_API_KEY !== "") {
+            this.openai = new OpenAI({ apiKey: config.OPENAI_API_KEY });
+        }
+    }
     public async getDataFromUrlAndEncodeToWav(req: Request): Promise<string | null> {
         let wavFile: any = null;
         const rawData = req.body;
-        // if (!rawData || !Buffer.isBuffer(rawData)) {
-        //     console.error('Invalid data received in the request body');
-        //     return null;
-        // }
-        // const buffer = Buffer.from(body.toString(), 'binary');
+        console.log(rawData);
         const fileName = 'text.wav';
         fs.writeFileSync('text.wav', rawData);
         return fileName;
-        // if (wavFile) {
-        //     fs.writeFileSync('text.wav', rawData);
-        //     return "success";
-        // } else {
-        //     return "failure";
-        // }
+    }
+    public async sendDataToUser(matchedText: string): Promise<{
+        id: number,
+        step: number,
+        text: string
+    }> {
+        const textString = 'Czy widzisz ją na ekranie głównym?';
+        const id: number = 1;
+        const step: number = 1;
+        const data = {
+            id: id,
+            step: step,
+            text: textString
+        };
+        return data;
+    }
+    public async getOpenAIPrompt(content: string) {
+        if (!this.openai) {
+            throw new Error("OpenAI API key is missing");
+        }
+        const completion = await this.openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                { "role": "user", "content": content }
+            ]
+        });
+
+        return completion.choices[0].message.content ?? "";
     }
 }
