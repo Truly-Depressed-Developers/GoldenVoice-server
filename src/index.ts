@@ -74,7 +74,6 @@ app.post("/mock", async (req, res) => {
     { "request": "Tak", "response": "Przytrzymaj palcem na ikonie telefonu Czy wyświetlił się dodatkowy dialog?" },
     { "request": "No tak", "response": "Czy widzisz napis 'Dodaj do ekr. st.'?" },
     { "request": "Mhm", "response": "Kliknij w ten napis. Czy widzisz ikonę telefonu na ekranie głównym?" },
-    { "request": "Widzę", "response": "Przytrzymaj palcem na ikonie telefonu i przeciągnij ikonę na pasek nawigacyjny. Udało się?" },
     { "request": "Tak, dzięki", "response": "Czy problem został rozwiązany?" }
   ];
 
@@ -136,7 +135,7 @@ app.post("/wavFileTest", async (req, res) => {
   // }
   // const text = await speechToText.recognizeSpeech(wavFile);
   // console.log(text.text);
-  const finalText = "Zniknęła mi ikona telefonu na pasku na dole ekranu";
+  const finalText = "Jak wygrać hackaton?";
   const matchedText = finalText;
   const allPrompts = await selectAllGivenPrompts();
   const matchedPrompt = allPrompts.find((element) => element.pytanie === matchedText);
