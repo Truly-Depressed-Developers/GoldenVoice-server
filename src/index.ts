@@ -1,5 +1,6 @@
 import bodyParser, { raw } from "body-parser";
 import express from "express";
+import session from "express-session";
 import { DataManager } from "./DataManager/DataManager";
 import { SpeechToText } from "./SpeechToText/SpeechToText";
 
@@ -22,6 +23,32 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(session({
+  secret: 'gfg-key',
+  resave: false,
+  saveUninitialized: true
+}));
+
+declare module 'express-session' {
+  interface SessionData {
+    // id: number,
+    data: {
+      pytanie: string | null;
+      instrukcje: {
+        [key: string]: {
+          pytanie: string;
+          odpowiedzi: {
+            tak: string | number;
+            nie: string | number;
+          };
+        };
+      } | null;
+    }
+
+    iter: number,
+  }
+}
+
 const dataManager = new DataManager();
 const speechToText = new SpeechToText(MODEL_PATH);
 // speechToText.recognizeSpeech("barka.wav");
@@ -42,10 +69,10 @@ app.post("/mock", async (req, res) => {
   const text = req.body.request;
   // const matchedText = "Zniknęła mi ikona telefonu na pasku nawigacyjnym";
   const tab = [
-    { "request": "Zniknęła mi ikona telefonu na pasku nawigacyjnym.", "response": "Czy widzisz ją na ekranie głównym?" },
+    { "request": "Zniknął mi telefon", "response": "Czy widzisz go na  ekranie głównym?" },
     { "request": "Nie", "response": "Przesuń palcem w dół na ekranie głównym, aby otworzyć listę aplikacji. Czy widzisz ikonę telefonu na liście aplikacji?" },
     { "request": "Tak", "response": "Przytrzymaj palcem na ikonie telefonu Czy wyświetlił się dodatkowy dialog?" },
-    { "request": "No tak", "response": "Czy widzisz napis Add to Home?" },
+    { "request": "No tak", "response": "Czy widzisz napis 'Dodaj do ekr. st.'?" },
     { "request": "Mhm", "response": "Kliknij w ten napis. Czy widzisz ikonę telefonu na ekranie głównym?" },
     { "request": "Widzę", "response": "Przytrzymaj palcem na ikonie telefonu i przeciągnij ikonę na pasek nawigacyjny. Udało się?" },
     { "request": "Tak, dzięki", "response": "Czy problem został rozwiązany?" }
@@ -55,8 +82,9 @@ app.post("/mock", async (req, res) => {
     i = 0;
   }
   res.send(tab[i++]);
-
 });
+
+
 
 app.post("/saveIntoDB", async (req, res) => {
   const problem = "Chciałbym zalogować się na pocztę";
@@ -97,6 +125,10 @@ app.post("/wavFile", async (req, res) => {
 });
 
 app.post("/wavFileTest", async (req, res) => {
+  if (req.session.iter === undefined) {
+    req.session.iter = 1;
+  }
+
   // const wavFile = await dataManager.getDataFromUrlAndEncodeToWav(req);
   // if (!wavFile) {
   //   res.status(404).send("No data in request");
@@ -117,6 +149,7 @@ app.post("/wavFileTest", async (req, res) => {
     const response = await selectGivenInstructions(matchedPrompt.pytanie);
     if (response && response.length > 0) {
       const instructions = response[0].instrukcje;
+      req.session.data = { pytanie: matchedPrompt.pytanie, instrukcje: instructions };
       res.send({ pytanie: matchedPrompt.pytanie, instrukcje: instructions });
     } else {
       res.status(404).send("No instructions found");
@@ -130,3 +163,4 @@ app.post("/wavFileTest", async (req, res) => {
 
 
 app.listen(port, () => console.info(`start serwera na porcie ${port}`))
+
